@@ -2,8 +2,6 @@ use std::num::NonZeroU32;
 use std::sync::Arc;
 use std::time::Duration;
 
-#[cfg(target_os = "windows")]
-use egui_wgpu::wgpu::Dx12SwapchainKind;
 use egui_wgpu::wgpu::PresentMode;
 #[cfg(target_os = "windows")]
 use egui_wgpu::wgpu::{Backends, Dx12SwapchainKind};
