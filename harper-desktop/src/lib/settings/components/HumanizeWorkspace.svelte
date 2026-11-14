@@ -4,6 +4,8 @@ import { Button } from 'components';
 import { onMount } from 'svelte';
 import { Client, type HumanizerRewrite } from '$lib/client';
 import { humanizer, refreshHumanizer } from '$lib/humanizer';
+import HumanizeScan from './HumanizeScan.svelte';
+import HumanizeFacts from './HumanizeFacts.svelte';
 
 let draft = '';
 let result = '';
@@ -23,6 +25,7 @@ export let tall = false;
 $: status = $humanizer.status;
 $: ready = Boolean(status && status.engine_installed && status.active);
 $: wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+
 
 onMount(() => {
 	void refreshHumanizer();
@@ -146,6 +149,8 @@ function onKeydown(event: KeyboardEvent) {
     </div>
   {/if}
 
+  <HumanizeScan {draft} {result} {busy} />
+
   <div class="hz-grid">
     <section class="hz-pane">
       <div class="hz-label">Draft {#if wordCount}<span class="hz-muted">· {wordCount} words</span>{/if}</div>
@@ -190,7 +195,8 @@ function onKeydown(event: KeyboardEvent) {
     </section>
   </div>
 
-  {#if numbers && !busy}
+  <HumanizeFacts {draft} {result} {busy} />
+  {#if numbers && !busy && !result.trim()}
     {#if numbers.missing.length || numbers.added.length}
       <p class="hz-note" role="alert">
         <span class="hz-pill">Check the numbers</span>

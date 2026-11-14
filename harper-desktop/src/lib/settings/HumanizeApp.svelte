@@ -5,6 +5,8 @@ import { onMount } from 'svelte';
 import { Client, type HumanizerRewrite } from '$lib/client';
 import { humanizer, refreshHumanizer } from '$lib/humanizer';
 import { applyTheme } from '$lib/theme';
+import HumanizeScan from './components/HumanizeScan.svelte';
+import HumanizeFacts from './components/HumanizeFacts.svelte';
 import './settings.css';
 
 let draft = '';
@@ -129,6 +131,8 @@ function onKeydown(event: KeyboardEvent) {
       </Panel>
     {/if}
 
+    <HumanizeScan {draft} {result} {busy} />
+
     <div class="humanize-grid">
       <section class="stanza">
         <div class="eyebrow">Draft {#if wordCount}<span class="humanize-count">· {wordCount} words</span>{/if}</div>
@@ -172,7 +176,8 @@ function onKeydown(event: KeyboardEvent) {
       </section>
     </div>
 
-    {#if numbers && !busy}
+    <HumanizeFacts {draft} {result} {busy} />
+    {#if numbers && !busy && !result.trim()}
       {#if numbers.missing.length || numbers.added.length}
         <p class="result-summary" role="alert">
           <span class="pill amber">Check the numbers</span>
