@@ -4,10 +4,8 @@ import { Button } from 'components';
 import { onMount } from 'svelte';
 import { Client, type HumanizerRewrite } from '$lib/client';
 import { humanizer, refreshHumanizer } from '$lib/humanizer';
-import { analyze, BAND_TEXT } from '$lib/writeflow/score.js';
-import { rankSentences } from '$lib/writeflow/sentences.js';
-import { compareFacts } from '$lib/writeflow/factcheck.js';
-import { readingGrade } from '$lib/writeflow/style.js';
+import HumanizeScan from './HumanizeScan.svelte';
+import HumanizeFacts from './HumanizeFacts.svelte';
 
 let draft = '';
 let result = '';
@@ -28,36 +26,6 @@ $: status = $humanizer.status;
 $: ready = Boolean(status && status.engine_installed && status.active);
 $: wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
 
-// Offline scan (Writeflow): how AI-sounding the draft reads, which sentences, and the reading level.
-// Runs on this computer only and is cheap, so it follows the draft as you type.
-let scan: ReturnType<typeof analyze> | null = null;
-let worst: Array<{ text: string; weight: number }> = [];
-let grade: number | null = null;
-let scanTimer: ReturnType<typeof setTimeout> | undefined;
-$: scheduleScan(draft);
-function scheduleScan(text: string) {
-	clearTimeout(scanTimer);
-	if (!text.trim()) {
-		scan = null;
-		worst = [];
-		grade = null;
-		return;
-	}
-	scanTimer = setTimeout(() => {
-		scan = analyze(text);
-		worst = rankSentences(text, scan.flags).ranked.slice(0, 3);
-		grade = readingGrade(text);
-	}, 300);
-}
-$: after = result.trim() && !busy ? analyze(result) : null;
-$: facts = result.trim() && !busy ? compareFacts(draft, result) : null;
-const FACT_LABEL: Record<string, string> = { numbers: 'numbers', dates: 'dates', quotes: 'quotes', names: 'names' };
-function factLine(group: Record<string, string[]>) {
-	return Object.entries(group)
-		.filter(([, list]) => list.length)
-		.map(([kind, list]) => `${FACT_LABEL[kind] ?? kind}: ${list.join(', ')}`)
-		.join('; ');
-}
 
 onMount(() => {
 	void refreshHumanizer();
@@ -181,37 +149,7 @@ function onKeydown(event: KeyboardEvent) {
     </div>
   {/if}
 
-  {#if scan}
-    <section class="hz-scan" aria-label="AI-sounding score">
-      {#if scan.stats.enough}
-        <div class="hz-score" data-band={scan.band}>
-          <span class="hz-score-num">{scan.score}</span><span class="hz-score-of">/100</span>
-        </div>
-        <div class="hz-scan-text">
-          <strong>
-            {BAND_TEXT[scan.band as keyof typeof BAND_TEXT]}
-            {#if after && after.stats.enough}
-              <span class="hz-muted"> After the rewrite: {scan.score} → {after.score}</span>
-            {/if}
-          </strong>
-          <span class="hz-muted">
-            {scan.flags.length} flagged {scan.flags.length === 1 ? 'phrase' : 'phrases'}
-            {#if grade !== null}· Reading grade {grade}{/if}
-            · A guide to writing habits, not proof of who wrote it.
-          </span>
-        </div>
-      {:else}
-        <div class="hz-scan-text"><span class="hz-muted">{BAND_TEXT.short}</span></div>
-      {/if}
-    </section>
-    {#if worst.length}
-      <ul class="hz-worst" aria-label="Most AI-sounding sentences">
-        {#each worst as item}
-          <li>{item.text}</li>
-        {/each}
-      </ul>
-    {/if}
-  {/if}
+  <HumanizeScan {draft} {result} {busy} />
 
   <div class="hz-grid">
     <section class="hz-pane">
@@ -257,17 +195,8 @@ function onKeydown(event: KeyboardEvent) {
     </section>
   </div>
 
-  {#if facts && !busy}
-    {#if !facts.ok}
-      <p class="hz-note" role="alert">
-        <span class="hz-pill">Check the facts</span>
-        {#if facts.total && Object.values(facts.missing).some((l) => l.length)}The rewrite dropped {factLine(facts.missing)}.{/if}
-        {#if Object.values(facts.added).some((l) => l.length)} It added {factLine(facts.added)}.{/if}
-      </p>
-    {:else}
-      <p class="hz-note">Numbers, dates, quotes and names match the draft.</p>
-    {/if}
-  {:else if numbers && !busy}
+  <HumanizeFacts {draft} {result} {busy} />
+  {#if numbers && !busy && !result.trim()}
     {#if numbers.missing.length || numbers.added.length}
       <p class="hz-note" role="alert">
         <span class="hz-pill">Check the numbers</span>
@@ -367,50 +296,6 @@ function onKeydown(event: KeyboardEvent) {
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-  }
-  .hz-scan {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 16px;
-    padding: 12px 16px;
-    border: 1px solid var(--hz-line);
-    border-radius: 10px;
-    background: var(--hz-panel);
-  }
-  .hz-score {
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-    min-width: 76px;
-  }
-  .hz-score-num {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .hz-score[data-band='high'] .hz-score-num {
-    color: #c0392b;
-  }
-  .hz-score[data-band='medium'] .hz-score-num {
-    color: #b9770e;
-  }
-  .hz-score-of {
-    color: var(--hz-ink-2);
-    font-size: 12px;
-  }
-  .hz-scan-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-  .hz-worst {
-    margin: 10px 0 0;
-    padding-left: 20px;
-    color: var(--hz-ink-2);
-    font-size: 13px;
-    line-height: 1.5;
   }
   .hz-setup {
     display: flex;
