@@ -17,3 +17,6 @@ vendor/bundle/
 fastlane/report.xml
 fastlane/README.md
 harper-desktop/src-tauri/engine-bundle/
+
+# Brand sources are kept outside the repo
+/brand/
