@@ -26,7 +26,7 @@ Gramflow checks your writing as you type, in Notes, Mail, Messages, TextEdit and
 
 ## Download and install
 
-**Easiest:** install and update it with the [FlowApps launcher](https://github.com/reachneoagent-commits/FlowApps-Launcher/releases/latest), one app that also manages Gramflow, Voxflow and Mailflow on Mac and Windows. Or download an installer yourself below.
+**Easiest:** install and update it with the [FlowApps launcher](https://github.com/reachneoagent-commits/FlowApps-Launcher/releases/latest), one app that also manages the other FlowApps on Mac and Windows. Or download an installer yourself below.
 
 Download the installer for your system (latest version, 3.0.14).
 
