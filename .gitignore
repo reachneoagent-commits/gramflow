@@ -20,3 +20,7 @@ harper-desktop/src-tauri/engine-bundle/
 
 # Brand sources are kept outside the repo
 /brand/
+
+# Local/generated files (repo audit)
+test.log
+*.log
