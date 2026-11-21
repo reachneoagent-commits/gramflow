@@ -1,7 +1,11 @@
-<div align="center">
-  <h1>Gramflow</h1>
-  <p><strong>A free, open source, private grammar and spell checker for the Mac and Windows apps you already write in.</strong></p>
-</div>
+<p align="left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.png">
+    <img src="assets/header-light.png" width="600" height="160" alt="Gramflow logo and name">
+  </picture>
+</p>
+
+<p align="center"><b>A free, open source, private grammar and spell checker for the Mac and Windows apps you already write in.</b></p>
 
 > Gramflow is a fork of [Harper](https://github.com/automattic/harper) by Automattic, an open source project under the Apache 2.0 license. Thank you to the Harper authors and contributors for the grammar engine and the foundation this app is built on. The Humanizer feature is built on the open source [Humanizer](https://github.com/sgaofen/humanizer-local-model) by Sgaofen, with its [model](https://huggingface.co/jialinyyzz/humanizer) by jialinyyzz. See [NOTICE](NOTICE) for details.
 
