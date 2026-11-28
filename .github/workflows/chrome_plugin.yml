@@ -2,10 +2,10 @@ name: Chrome Plugin
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main", "master"]
     tags: ["v*"]
   pull_request:
-    branches: ["master"]
+    branches: ["main", "master"]
   merge_group:
 
 # Cancel superseded runs when a PR gets new commits, freeing runners for other

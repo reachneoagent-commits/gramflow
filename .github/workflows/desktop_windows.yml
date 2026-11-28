@@ -2,9 +2,9 @@ name: Harper Desktop for Windows
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main", "master"]
   pull_request:
-    branches: ["master"]
+    branches: ["main", "master"]
   merge_group:
 
 # Cancel superseded runs when a PR gets new commits, freeing runners for other

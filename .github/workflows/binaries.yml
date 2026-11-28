@@ -2,7 +2,7 @@ name: Binaries
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main", "master"]
     tags: ["v*"]
   merge_group:
 
