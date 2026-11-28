@@ -69,5 +69,9 @@ jobs:
         run: cargo binstall cargo-hack --force --no-confirm
       - name: Install `tauri-cli`
         run: cargo binstall tauri-cli --force --no-confirm
+      # Gramflow bundles the Humanizer engine and the browser extensions as app
+      # resources. The release workflow fills these folders; CI only needs them to exist.
+      - name: Create placeholder app resources
+        run: mkdir -p harper-desktop/src-tauri/engine-bundle packages/chrome-plugin/build packages/chrome-plugin/build-firefox
       - name: Run `${{ matrix.task }}`
         run: just ${{ matrix.task }}

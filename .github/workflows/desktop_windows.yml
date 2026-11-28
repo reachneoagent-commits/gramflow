@@ -78,6 +78,10 @@ jobs:
         with:
           path: ~/.cache/cargo-xwin
           key: cargo-xwin-${{ runner.os }}
+      # Gramflow bundles the Humanizer engine and the browser extensions as app
+      # resources. The release workflow fills these folders; CI only needs them to exist.
+      - name: Create placeholder app resources
+        run: mkdir -p harper-desktop/src-tauri/engine-bundle packages/chrome-plugin/build packages/chrome-plugin/build-firefox
       - name: Build Harper Desktop for Windows
         run: just build-desktop-windows
       - name: Upload artifacts
