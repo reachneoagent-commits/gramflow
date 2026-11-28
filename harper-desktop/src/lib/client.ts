@@ -488,6 +488,10 @@ export class Client {
 		return await invoke<boolean>('start_highlighter_service');
 	}
 
+	static async restartHarper(): Promise<void> {
+		await invoke('restart_harper');
+	}
+
 	static async stopHighlighterService(): Promise<boolean> {
 		return await invoke<boolean>('stop_highlighter_service');
 	}

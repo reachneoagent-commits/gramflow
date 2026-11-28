@@ -473,7 +473,8 @@ pub fn suggest_correct_spelling<'a>(
     max_edit_dist: u8,
     dictionary: &'a impl Dictionary,
 ) -> Vec<&'a [char]> {
-    let matches = fuzzy_matches_with_swaps(misspelled_word, result_limit, max_edit_dist, dictionary);
+    let matches =
+        fuzzy_matches_with_swaps(misspelled_word, result_limit, max_edit_dist, dictionary);
 
     order_suggestions(misspelled_word, matches)
         .into_iter()

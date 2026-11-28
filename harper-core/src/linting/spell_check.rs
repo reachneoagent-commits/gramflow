@@ -88,6 +88,23 @@ impl<T: Dictionary> SpellCheck<T> {
     }
 }
 
+/// Gramflow: in a word of up to three letters (`si`, `teh`, `adn`), a swapped pair of letters is
+/// almost always the intended fix, so it stays first whatever the context ranker prefers. Longer
+/// words have enough letters for the ranker to judge (`waer` -> `water`, not `ware`).
+fn keep_swap_first(typed: &[char], ordered: &mut Vec<CharString>) {
+    const LONGEST_PINNED: usize = 3;
+    if typed.len() > LONGEST_PINNED {
+        return;
+    }
+    if let Some(position) = ordered
+        .iter()
+        .position(|candidate| crate::spell::is_transposition(typed, candidate))
+    {
+        let fix = ordered.remove(position);
+        ordered.insert(0, fix);
+    }
+}
+
 #[cfg(feature = "context-ranking")]
 fn order_by_context(
     candidates: Vec<(CharString, i32)>,
@@ -168,10 +185,9 @@ impl<T: Dictionary> Linter for SpellCheck<T> {
             };
 
             let candidates = self.suggest_correct_spelling(word_chars);
-            let ranked: Vec<CharString> = order_by_context(candidates, document, word_index)
-                .into_iter()
-                .take(Self::MAX_SUGGESTIONS)
-                .collect();
+            let mut ordered = order_by_context(candidates, document, word_index);
+            keep_swap_first(word_chars, &mut ordered);
+            let ranked: Vec<CharString> = ordered.into_iter().take(Self::MAX_SUGGESTIONS).collect();
             let mut possibilities = self.with_canonical_case_first(word_chars, ranked);
 
             // If the misspelled word is capitalized, capitalize the results too.
@@ -1193,6 +1209,15 @@ mod test_context_ranking {
                     .collect()
             })
             .unwrap_or_default()
+    }
+
+    #[test]
+    fn swapped_letters_stay_first_in_context() {
+        let suggestions = suggestions("Let me test si this works.");
+        assert_eq!(
+            suggestions.first().map(|word| word.to_lowercase()),
+            Some("is".to_string())
+        );
     }
 
     fn lowercase(words: &[String]) -> Vec<String> {
