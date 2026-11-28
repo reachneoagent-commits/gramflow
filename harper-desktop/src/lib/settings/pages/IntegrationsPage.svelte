@@ -10,7 +10,7 @@ import {
 	TrashIcon,
 } from 'components';
 import { onMount } from 'svelte';
-import { Client, type BrowserProfileStatus, type Integration } from '$lib/client';
+import { type BrowserProfileStatus, Client, type Integration } from '$lib/client';
 import AppIcon from '../components/AppIcon.svelte';
 import AppPickerModal from '../components/AppPickerModal.svelte';
 
@@ -105,7 +105,8 @@ async function updateProfileExtension(profile: BrowserProfileStatus) {
 		);
 		profileNotice = {
 			...profileNotice,
-			[profileKey(profile)]: 'Files updated. On the page that opened, click the reload arrow (↻) on Gramflow to finish.',
+			[profileKey(profile)]:
+				'Files updated. On the page that opened, click the reload arrow (↻) on Gramflow to finish.',
 		};
 		await loadBrowserProfiles();
 	} catch (error) {
@@ -124,7 +125,8 @@ async function removeProfileExtension(profile: BrowserProfileStatus) {
 		);
 		profileNotice = {
 			...profileNotice,
-			[profileKey(profile)]: 'On the page that opened, click Remove, then confirm. This list updates when you come back.',
+			[profileKey(profile)]:
+				'On the page that opened, click Remove, then confirm. This list updates when you come back.',
 		};
 	} catch (error) {
 		extensionError = `${error}`;

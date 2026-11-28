@@ -84,7 +84,9 @@ function trapTab(event: KeyboardEvent) {
 	if (event.key !== 'Tab') return;
 	const root = event.currentTarget as HTMLElement;
 	const items = Array.from(
-		root.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), [tabindex="0"]'),
+		root.querySelectorAll<HTMLElement>(
+			'button:not([disabled]), input:not([disabled]), [tabindex="0"]',
+		),
 	);
 	if (items.length === 0) return;
 	const first = items[0];

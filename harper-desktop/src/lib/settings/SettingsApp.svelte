@@ -2,9 +2,9 @@
 import { onMount } from 'svelte';
 import { Client } from '$lib/client';
 import { applyTheme } from '$lib/theme';
-import SettingsSidebar from './SettingsSidebar.svelte';
 import AccessibilityBanner from './components/AccessibilityBanner.svelte';
 import CoreRulesBanner from './components/CoreRulesBanner.svelte';
+import SettingsSidebar from './SettingsSidebar.svelte';
 import './settings.css';
 import AboutPage from './pages/AboutPage.svelte';
 import DictionaryPage from './pages/DictionaryPage.svelte';
@@ -80,7 +80,7 @@ const pageHeads: Partial<Record<SectionId, { lead: string; accent: string; sub: 
 	rules: {
 		lead: 'What Gramflow',
 		accent: 'checks',
-		sub: 'Gramflow starts with our recommended settings, so you don\'t need to change anything. Turn a rule off if it gets in your way.',
+		sub: "Gramflow starts with our recommended settings, so you don't need to change anything. Turn a rule off if it gets in your way.",
 	},
 	shortcuts: {
 		lead: 'Keyboard',

@@ -14,7 +14,7 @@ jobs:
   create-release:
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       release-id: ${{ steps.create-release.outputs.result }}
       version: ${{ steps.get-version.outputs.version }}
@@ -54,7 +54,7 @@ jobs:
 
   # The browser extensions are the same on every OS, so build them once on Linux.
   extensions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: extractions/setup-just@v3
@@ -170,7 +170,7 @@ jobs:
     if: ${{ always() && needs.create-release.result == 'success' }}
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Rename Mac installers
         env:

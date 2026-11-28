@@ -32,15 +32,17 @@ const shortcutLabel = isMac ? 'Control + Command + H' : 'Control + Alt + H';
 onMount(() => {
 	void refreshHumanizer();
 	let stop: (() => void) | undefined;
-	void watchHumanizer().then((unlisten) => (stop = unlisten));
+	void watchHumanizer().then((unlisten) => {
+		stop = unlisten;
+	});
 	return () => stop?.();
 });
 
-$: status = $humanizer.status;
-$: verdict = status?.verdict;
+$: hzStatus = $humanizer.status;
+$: verdict = hzStatus?.verdict;
 $: available = verdict !== undefined && verdict.level !== 'Unavailable';
 $: installedCount = verdict?.options.filter((option) => option.installed).length ?? 0;
-$: busyDownload = status?.downloading ?? null;
+$: busyDownload = hzStatus?.downloading ?? null;
 
 function levelLabel(level: string) {
 	return level === 'Ready' ? 'Ready' : level === 'Limited' ? 'Limited' : 'Not available';
@@ -64,9 +66,9 @@ async function run(action: () => Promise<void>) {
 }
 
 async function saveSettings(patch: Partial<HumanizerSettings>) {
-	if (!status || isSaving) return;
+	if (!hzStatus || isSaving) return;
 	isSaving = true;
-	await run(() => Client.humanizerSaveSettings({ ...status.settings, ...patch }));
+	await run(() => Client.humanizerSaveSettings({ ...hzStatus.settings, ...patch }));
 	isSaving = false;
 }
 
@@ -132,7 +134,7 @@ async function confirmDelete() {
 <section>
   {#if $humanizer.loading}
     <p class="result-summary" role="status">Checking this computer...</p>
-  {:else if verdict && status}
+  {:else if verdict && hzStatus}
     <div class="stanza">
       <div class="eyebrow">This computer</div>
       <Panel>
@@ -149,7 +151,7 @@ async function confirmDelete() {
           <span class="pill" class:amber={verdict.level !== 'Unavailable'}>{levelLabel(verdict.level)}</span>
         </div>
       </Panel>
-      {#if available && !status.engine_installed}
+      {#if available && !hzStatus.engine_installed}
         <p class="result-summary" role="alert">
           The rewriting engine isn't included in this build, so models can be managed but not used yet.
         </p>
@@ -167,7 +169,7 @@ async function confirmDelete() {
         <Panel>
           {#each verdict.options as option (option.id)}
             {@const blocked = whyDisabled(option)}
-            {@const isActive = status.active === option.id}
+            {@const isActive = hzStatus.active === option.id}
             {@const isDownloading = busyDownload === option.id}
             <div class="app-row">
               <div class="grow">
@@ -196,7 +198,9 @@ async function confirmDelete() {
                   danger
                   disabled={busyDownload !== null}
                   aria-label={`Delete the ${option.label} model`}
-                  on:click={() => (pendingDelete = option)}
+                  on:click={() => {
+		pendingDelete = option;
+	}}
                 >
                   <TrashIcon className="control-icon" />
                 </IconButton>
@@ -234,28 +238,28 @@ async function confirmDelete() {
               <strong>Check for updates automatically</strong>
               <p>About once a day. It only looks at our approved list.</p>
               <Toggle slot="control" appearance="settings"
-                checked={status.settings.auto_check_updates}
+                checked={hzStatus.settings.auto_check_updates}
                 aria-label="Check for updates automatically"
                 disabled={isSaving}
-                on:click={() => saveSettings({ auto_check_updates: !status.settings.auto_check_updates })}
+                on:click={() => saveSettings({ auto_check_updates: !hzStatus.settings.auto_check_updates })}
                />
             </SettingRow>
             <div class="inline-row">
               <Button color="white" size="sm" disabled={isChecking || busyDownload !== null} on:click={checkNow}>
                 {isChecking ? 'Checking...' : 'Check now'}
               </Button>
-              <span>Last checked {timeAgo(status.settings.last_update_check)}.</span>
+              <span>Last checked {timeAgo(hzStatus.settings.last_update_check)}.</span>
             </div>
             {#if checkMessage}
               <p class="result-summary" role="status">{checkMessage}</p>
-            {:else if status.update_error}
-              <p class="result-summary" role="alert">{status.update_error}</p>
+            {:else if hzStatus.update_error}
+              <p class="result-summary" role="alert">{hzStatus.update_error}</p>
             {/if}
           </div>
 
-          {#if status.updates.length}
+          {#if hzStatus.updates.length}
             <Panel>
-              {#each status.updates as update (update.tier)}
+              {#each hzStatus.updates as update (update.tier)}
                 {@const working = $humanizer.updatePhase?.tier === update.tier || busyDownload === update.tier}
                 <div class="app-row">
                   <div class="grow">
@@ -286,9 +290,11 @@ async function confirmDelete() {
             </Panel>
           {/if}
 
-          {#each verdict.options.filter((option) => status.rollback.includes(option.id)) as option (option.id)}
+          {#each verdict.options.filter((option) => hzStatus.rollback.includes(option.id)) as option (option.id)}
             <div class="inline-row">
-              <Button color="white" size="sm" disabled={busyDownload !== null} on:click={() => (pendingRollback = option)}>
+              <Button color="white" size="sm" disabled={busyDownload !== null} on:click={() => {
+		pendingRollback = option;
+	}}>
                 Go back to the previous {option.label} version
               </Button>
             </div>
@@ -316,10 +322,10 @@ async function confirmDelete() {
               <strong>Warn when numbers change</strong>
               <p>Flag a rewrite that drops or adds a number, so facts don't slip through.</p>
               <Toggle slot="control" appearance="settings"
-                checked={status.settings.warn_numbers}
+                checked={hzStatus.settings.warn_numbers}
                 aria-label="Warn when numbers change"
                 disabled={isSaving}
-                on:click={() => saveSettings({ warn_numbers: !status.settings.warn_numbers })}
+                on:click={() => saveSettings({ warn_numbers: !hzStatus.settings.warn_numbers })}
                />
             </SettingRow>
             <div class="inline-row">
@@ -329,7 +335,7 @@ async function confirmDelete() {
                 id="humanizer-idle"
                 class="select wide"
                 disabled={isSaving}
-                value={String(status.settings.idle_minutes)}
+                value={String(hzStatus.settings.idle_minutes)}
                 on:change={(event) => saveSettings({ idle_minutes: Number((event.detail.currentTarget as HTMLSelectElement).value) })}
               >
                 {#each IDLE_CHOICES as choice}
@@ -340,7 +346,7 @@ async function confirmDelete() {
             </div>
             <div class="inline-row">
               <Button color="white" size="sm" on:click={() => run(Client.humanizerOpenModelsFolder)}>Show models folder</Button>
-              {#if status.engine_running}
+              {#if hzStatus.engine_running}
                 <Button color="white" size="sm" on:click={() => run(Client.humanizerStopEngine)}>Free memory now</Button>
               {/if}
             </div>
@@ -362,7 +368,9 @@ async function confirmDelete() {
     message="Gramflow switches to the version you had before the last update. You can switch back again afterwards."
     confirmLabel="Go back"
     cancelLabel="Keep current"
-    onCancel={() => (pendingRollback = null)}
+    onCancel={() => {
+		pendingRollback = null;
+	}}
     onConfirm={confirmRollback}
   />
 {/if}
@@ -373,7 +381,9 @@ async function confirmDelete() {
     message={`This frees ${formatGb(pendingDelete.size_bytes)} of disk space. You can download it again later.${installedCount === 1 ? ' Humanizer stops working until you download a model.' : ''}`}
     confirmLabel="Delete"
     cancelLabel="Keep"
-    onCancel={() => (pendingDelete = null)}
+    onCancel={() => {
+		pendingDelete = null;
+	}}
     onConfirm={confirmDelete}
   />
 {/if}

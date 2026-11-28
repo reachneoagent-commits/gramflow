@@ -12,12 +12,12 @@ onMount(() => {
 	void refreshHumanizer();
 });
 
-$: status = $humanizer.status;
-$: installed = status?.verdict.options.filter((option) => option.installed) ?? [];
-$: active = installed.find((option) => option.id === status?.active);
+$: hzStatus = $humanizer.status;
+$: installed = hzStatus?.verdict.options.filter((option) => option.installed) ?? [];
+$: active = installed.find((option) => option.id === hzStatus?.active);
 
 async function switchModel(id: string) {
-	if (switching || id === status?.active) return;
+	if (switching || id === hzStatus?.active) return;
 	switching = true;
 	error = '';
 	try {
@@ -36,7 +36,7 @@ async function switchModel(id: string) {
     <header class="hz-bar">
       <div class="hz-bar-model">
         {#if active}
-          <span class="hz-badge">{status?.engine_running ? 'Loaded' : 'Ready'}</span>
+          <span class="hz-badge">{hzStatus?.engine_running ? 'Loaded' : 'Ready'}</span>
           <strong>{active.label}</strong>
           <span class="hz-bar-size">{formatGb(active.size_bytes)}</span>
         {:else}
@@ -51,7 +51,7 @@ async function switchModel(id: string) {
             id="humanize-model"
             class="hz-select"
             disabled={switching}
-            value={status?.active ?? ''}
+            value={hzStatus?.active ?? ''}
             on:change={(event) => switchModel((event.detail.currentTarget as HTMLSelectElement).value)}
           >
             {#each installed as option}
@@ -59,7 +59,7 @@ async function switchModel(id: string) {
             {/each}
           </Select>
         {/if}
-        {#if status?.engine_running}
+        {#if hzStatus?.engine_running}
           <Button color="white" size="sm" on:click={() => Client.humanizerStopEngine().then(refreshHumanizer)}>Free memory</Button>
         {/if}
         <Button color="white" size="sm" on:click={() => Client.humanizerOpenSettings()}>Models and settings</Button>

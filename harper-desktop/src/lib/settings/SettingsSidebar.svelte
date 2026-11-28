@@ -2,8 +2,8 @@
 import {
 	BookIcon,
 	ChecklistIcon,
-	GramflowMark,
 	GearIcon,
+	GramflowMark,
 	GridIcon,
 	InfoIcon,
 	KeyIcon,
