@@ -374,9 +374,9 @@ function settingsValueToDialect(value: string): Dialect {
               <p class="result-summary restart-summary">
                 Update installed.
                 {#if isRestarting}
-                  Restarting Harper…
+                  Restarting Gramflow…
                 {:else}
-                  <button type="button" class="restart-link" disabled={isCheckingForUpdates} on:click={restartHarper}>Restart Harper</button> to finish.
+                  <button type="button" class="restart-link" disabled={isCheckingForUpdates} on:click={restartHarper}>Restart Gramflow</button> to finish.
                 {/if}
               </p>
               {#if restartError}

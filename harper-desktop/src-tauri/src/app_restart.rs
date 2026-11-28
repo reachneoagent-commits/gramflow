@@ -13,7 +13,7 @@ pub fn restart_once(
 ) -> io::Result<()> {
     restarting
         .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
-        .map_err(|_| io::Error::other("Harper is already restarting."))?;
+        .map_err(|_| io::Error::other("Gramflow is already restarting."))?;
     stop();
     let result = launch();
     if result.is_err() {

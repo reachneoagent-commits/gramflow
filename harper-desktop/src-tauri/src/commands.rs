@@ -584,12 +584,12 @@ async fn restart_harper<R: Runtime>(
         .await
         .save_to_system()
         .await
-        .map_err(|error| format!("Could not save progress: {error}. Retry Restart Harper."))?;
+        .map_err(|error| format!("Could not save progress: {error}. Retry Restart Gramflow."))?;
     let binary = tauri::process::current_binary(&app.env())
-        .map_err(|error| format!("Could not locate Harper: {error}. Quit Harper and open the installed application again."))?;
+        .map_err(|error| format!("Could not locate Gramflow: {error}. Quit Gramflow and open the installed application again."))?;
     highlighter_service.restart_app(|| {
         std::process::Command::new(binary).spawn().map(|_| ())
-    }).map_err(|error| format!("Could not restart Harper: {error}. Retry, or quit Harper and open the installed application again."))?;
+    }).map_err(|error| format!("Could not restart Gramflow: {error}. Retry, or quit Gramflow and open the installed application again."))?;
     app.exit(0);
     Ok(())
 }
