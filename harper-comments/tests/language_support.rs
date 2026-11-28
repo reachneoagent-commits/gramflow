@@ -59,7 +59,8 @@ create_test!(merged_lines.ts, 1);
 create_test!(javadoc_clean_simple.java, 0);
 create_test!(javadoc_complex.java, 5);
 create_test!(issue_132.rs, 1);
-create_test!(laravel_app.php, 2);
+// Gramflow flags short lowercase lines that end in a period: one more lint than upstream.
+create_test!(laravel_app.php, 3);
 create_test!(ignore_shebang_1.sh, 0);
 create_test!(ignore_shebang_2.sh, 0);
 create_test!(ignore_shebang_3.sh, 0);
@@ -71,7 +72,8 @@ create_test!(basic_groovy.groovy, 1);
 create_test!(complex_groovy_block_comments.groovy, 1);
 create_test!(complex_gradle_build.gradle, 1);
 create_test!(complex_groovy_strings_regex.groovy, 1);
-create_test!(issue_1097.lua, 0);
+// Gramflow flags short lowercase lines that end in a period: one more lint than upstream.
+create_test!(issue_1097.lua, 1);
 create_test!(basic.clj, 12);
 create_test!(mean.r, 1);
 
