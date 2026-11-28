@@ -94,6 +94,11 @@ const pageHeads: Partial<Record<SectionId, { lead: string; accent: string; sub: 
 	},
 	weirpacks: { lead: 'Style', accent: 'guides', sub: 'Rule bundles that enforce a house style.' },
 };
+/** Show the walkthrough again from the start without clearing persisted completion or other settings. */
+function restartOnboarding() {
+	active = 'general';
+	onboardingCompleted = false;
+}
 
 $: title = titleMap[active];
 $: pageHead = pageHeads[active];
@@ -125,7 +130,7 @@ $: if (contentEl && active) {
       <AccessibilityBanner />
       <CoreRulesBanner />
       {#if active === "general"}
-        <GeneralPage />
+        <GeneralPage onRestartOnboarding={restartOnboarding} />
       {:else if active === "writing"}
         <WritingPage />
       {:else if active === "dictionary"}

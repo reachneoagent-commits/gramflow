@@ -1,7 +1,13 @@
 import type { Dialect, LintConfig, LintOptions, StructuredLintConfig } from 'harper.js';
 import type { UnpackedLintGroups } from 'lint-framework';
 import { LRUCache } from 'lru-cache';
-import type { ActivationKey, Hotkey, WeirpackMeta } from './protocol';
+import type {
+	ActivationKey,
+	DomainStatus,
+	Hotkey,
+	SetDomainStatusResponse,
+	WeirpackMeta,
+} from './protocol';
 
 /**
  * Sends a message to the extension's background worker.
@@ -89,6 +95,7 @@ export default class ProtocolClient {
 	}
 
 	public static async setDialect(dialect: Dialect): Promise<void> {
+		this.lintCache.clear();
 		await sendToExtension({ kind: 'setDialect', dialect });
 	}
 
@@ -120,7 +127,6 @@ export default class ProtocolClient {
 	}
 
 	public static async getDomainEnabled(domain: string): Promise<boolean> {
-		this.lintCache.clear();
 		return (await sendToExtension({ kind: 'getDomainStatus', domain })).enabled;
 	}
 
@@ -133,16 +139,33 @@ export default class ProtocolClient {
 		enabled: boolean,
 		overrideValue = true,
 	): Promise<void> {
-		await sendToExtension({
+		const response = (await sendToExtension({
 			kind: 'setDomainStatus',
 			enabled,
 			domain,
 			overrideValue,
-		});
+		})) as SetDomainStatusResponse;
+
+		if (response.changed) {
+			this.lintCache.clear();
+		}
+	}
+
+	public static async getConfiguredDomains(): Promise<DomainStatus[]> {
+		return (await sendToExtension({ kind: 'getConfiguredDomains' })).domains;
+	}
+
+	public static async setDefaultDomainsEnabled(enabled: boolean): Promise<void> {
+		this.lintCache.clear();
+		await sendToExtension({ kind: 'setDefaultDomainsStatus', enabled });
+	}
+
+	public static async resetDomain(domain: string): Promise<void> {
+		this.lintCache.clear();
+		await sendToExtension({ kind: 'resetDomain', domain });
 	}
 
 	public static async getDefaultEnabled(): Promise<boolean> {
-		this.lintCache.clear();
 		return (await sendToExtension({ kind: 'getDefaultStatus' })).enabled;
 	}
 
@@ -151,6 +174,7 @@ export default class ProtocolClient {
 	}
 
 	public static async setDefaultEnabled(enabled: boolean): Promise<void> {
+		this.lintCache.clear();
 		await sendToExtension({ kind: 'setDefaultStatus', enabled });
 	}
 
