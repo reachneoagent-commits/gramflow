@@ -2101,38 +2101,38 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     1985 | “’Tis so,” said the Duchess: “and the moral of that is—‘Oh, ’tis love, ’tis
          |   ^~~ Did you mean to spell `Tis` this way?
 Suggest:
+  - Replace with: “Its”
   - Replace with: “This”
   - Replace with: “TVs”
-  - Replace with: “Tips”
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     1985 | “’Tis so,” said the Duchess: “and the moral of that is—‘Oh, ’tis love, ’tis
          |                                                              ^~~ Did you mean to spell `tis` this way?
     1986 | love, that makes the world go round!’”
 Suggest:
+  - Replace with: “its”
   - Replace with: “this”
   - Replace with: “tips”
-  - Replace with: “tip”
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     1985 | “’Tis so,” said the Duchess: “and the moral of that is—‘Oh, ’tis love, ’tis
          |                                                                         ^~~ Did you mean to spell `tis` this way?
     1986 | love, that makes the world go round!’”
 Suggest:
+  - Replace with: “its”
   - Replace with: “this”
   - Replace with: “his”
-  - Replace with: “tips”
 
 
 
@@ -2747,14 +2747,14 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     2418 | “Stand up and repeat ‘’Tis the voice of the sluggard,’” said the Gryphon.
          |                        ^~~ Did you mean to spell `Tis` this way?
 Suggest:
+  - Replace with: “Its”
   - Replace with: “This”
   - Replace with: “Tip”
-  - Replace with: “TVs”
 
 
 
@@ -2774,14 +2774,14 @@ Message: |
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     2425 | > “’Tis the voice of the Lobster; I heard him declare, “You have baked me too
          |     ^~~ Did you mean to spell `Tis` this way?
 Suggest:
+  - Replace with: “Its”
   - Replace with: “This”
   - Replace with: “Tip”
-  - Replace with: “TVs”
 
 
 
@@ -3162,9 +3162,9 @@ Message: |
     2491 | > e—e—evening, Beautiful, beauti—FUL SOUP!”
          |                                  ^~~ Did you mean to spell `FUL` this way?
 Suggest:
+  - Replace with: “Flu”
   - Replace with: “Full”
   - Replace with: “Fuel”
-  - Replace with: “Fun”
 
 
 

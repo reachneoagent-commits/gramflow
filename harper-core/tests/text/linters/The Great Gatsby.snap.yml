@@ -2495,14 +2495,14 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     1871 | afterward strangled his wife. Da Fontano the promoter came there, and Ed Legros
          |                               ^~ Did you mean to spell `Da` this way?
 Suggest:
+  - Replace with: “Ad”
   - Replace with: “Dr”
   - Replace with: “Dan”
-  - Replace with: “DM”
   - Replace with: “DA”
 
 
@@ -2984,15 +2984,15 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     2006 | To my astonishment, the thing had an authentic look. “Orderi di Danilo,” ran the
          |                                                              ^~ Did you mean to spell `di` this way?
     2007 | circular legend, “Montenegro, Nicolas Rex.”
 Suggest:
+  - Replace with: “id”
   - Replace with: “did”
   - Replace with: “die”
-  - Replace with: “din”
 
 
 
@@ -3165,14 +3165,14 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     2105 | “I handed the money to Katspaugh and I sid: ‘All right, Katspaugh, don’t pay him
          |                                        ^~~ Did you mean to spell `sid` this way?
 Suggest:
+  - Replace with: “SDI”
   - Replace with: “said”
   - Replace with: “six”
-  - Replace with: “sit”
 
 
 
@@ -5241,14 +5241,14 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4073 | “We're getting old,” said Daisy. “lf we were young we’d rise and dance.”
          |                                   ^~ Did you mean to spell `lf` this way?
 Suggest:
+  - Replace with: “fl”
   - Replace with: “la”
   - Replace with: “of”
-  - Replace with: “lo”
 
 
 
@@ -5669,50 +5669,50 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4479 | “Oh, my Ga-od! Oh, my Ga-od! Oh, Ga-od! Oh, my Ga-od!”
          |            ^~ Did you mean to spell `od` this way?
 Suggest:
+  - Replace with: “do”
   - Replace with: “ox”
   - Replace with: “oi”
-  - Replace with: “oh”
   - Replace with: “OD”
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4479 | “Oh, my Ga-od! Oh, my Ga-od! Oh, Ga-od! Oh, my Ga-od!”
          |                          ^~ Did you mean to spell `od` this way?
 Suggest:
+  - Replace with: “do”
   - Replace with: “ox”
   - Replace with: “oi”
-  - Replace with: “oh”
   - Replace with: “OD”
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4479 | “Oh, my Ga-od! Oh, my Ga-od! Oh, Ga-od! Oh, my Ga-od!”
          |                                     ^~ Did you mean to spell `od` this way?
 Suggest:
+  - Replace with: “do”
   - Replace with: “ox”
   - Replace with: “oi”
-  - Replace with: “oh”
   - Replace with: “OD”
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4479 | “Oh, my Ga-od! Oh, my Ga-od! Oh, Ga-od! Oh, my Ga-od!”
          |                                                   ^~ Did you mean to spell `od` this way?
 Suggest:
+  - Replace with: “do”
   - Replace with: “ox”
   - Replace with: “oi”
-  - Replace with: “oh”
   - Replace with: “OD”
 
 
@@ -5838,13 +5838,13 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     4503 | “She ran out ina road. Son-of-a-bitch didn’t even stopus car.”
          |              ^~~ Did you mean to spell `ina` this way?
 Suggest:
-  - Replace with: “inn”
   - Replace with: “Ian”
+  - Replace with: “inn”
   - Replace with: “in”
 
 
@@ -7225,15 +7225,15 @@ Suggest:
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     5508 | Street and asked for a job. He hadn’t eat anything for a couple of days. ‘Come
     5509 | on have some lunch with me,’ I sid. He ate more than four dollars’ worth of food
          |                                ^~~ Did you mean to spell `sid` this way?
 Suggest:
+  - Replace with: “SDI”
   - Replace with: “said”
   - Replace with: “sir”
-  - Replace with: “six”
 
 
 
@@ -7612,14 +7612,14 @@ Message: |
 
 
 
-Lint:    Spelling (32 priority)
+Lint:    Spelling (63 priority)
 Message: |
     5692 | figures in my more fantastic dreams. I see it as a night scene by El Greco: a
          |                                                                   ^~ Did you mean to spell `El` this way?
 Suggest:
+  - Replace with: “Le”
   - Replace with: “EC”
   - Replace with: “Eli”
-  - Replace with: “E”
 
 
 
