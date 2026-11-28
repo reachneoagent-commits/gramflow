@@ -705,7 +705,7 @@ async function removeWeirpack(id: string) {
                     Site Preferences ({filteredConfiguredDomains.length})
                   </summary>
                   <p class="text-xs text-gray-600 dark:text-[#d1d5db]!">
-                    Harper starts on the bundled sites by default. Use the checklist to enable or disable
+                    Gramflow starts on the bundled sites by default. Use the checklist to enable or disable
                     individual sites, or turn the defaults off and enable them from the popup as you visit
                     each site. Sites marked Default are bundled; anything else is an explicit setting.
                   </p>
