@@ -9,9 +9,9 @@ pub const TIPS: &[&str] = &[
     "Disable an unwanted rule from the suggestion popup. Re-enable it in Settings → Rules.",
     "Choose your English dialect in Settings → General.",
     "Want fewer interruptions? Try a 300 ms checking delay in Settings → General.",
-    "Choose which apps Harper checks in Settings → Integrations.",
-    "Use the settings button in this popup to open Harper’s preferences.",
-    "Harper checks your writing locally. Your text stays on your device.",
+    "Choose which apps Gramflow checks in Settings → Integrations.",
+    "Use the settings button in this popup to open Gramflow’s preferences.",
+    "Gramflow checks your writing locally. Your text stays on your device.",
     "Read a sentence aloud to catch awkward phrasing.",
     "Use consistent terminology so readers can follow your ideas.",
 ];

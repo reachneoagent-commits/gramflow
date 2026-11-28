@@ -392,7 +392,7 @@ function settingsValueToDialect(value: string): Dialect {
           <SettingRow top>
             <div class="eyebrow">Restart Onboarding from the Beginning</div>
             <p class="section-copy">
-              Useful to give Harper accessibility permission again or to learn how Harper works.
+              Useful to give Gramflow accessibility permission again or to learn how Gramflow works.
             </p>
             <Button slot="control" unstyled class="button" type="button" on:click={onRestartOnboarding}>
               Restart onboarding
