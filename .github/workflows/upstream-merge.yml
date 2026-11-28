@@ -2,19 +2,25 @@ name: Prepare Harper merge
 
 # Run this by hand after reading the "Harper update available" issue. It merges Harper on a new
 # branch, keeps Gramflow's name/version/updater settings, runs the tests and the branding check,
-# and opens a pull request. Merge the pull request yourself once you are happy with it.
+# and opens a pull request on an upstream-sync/ branch (the launcher's Maintainer settings list it).
+# Merge the pull request yourself, with a merge commit, once you are happy with it.
 
 on:
   workflow_dispatch:
     inputs:
       skip_paths:
-        description: "Folders to keep exactly as Gramflow has them (Harper's website, other editors)"
-        default: "packages/web .buildkite packages/wordpress-plugin packages/obsidian-plugin packages/vscode-plugin"
+        description: "Folders to keep exactly as Gramflow has them (its workflows, Harper's website, other editors)"
+        default: ".github packages/web .buildkite packages/wordpress-plugin packages/obsidian-plugin packages/vscode-plugin"
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
+
+# The workflow adds a git remote named "upstream", and gh prefers it over origin. Pin gh to this
+# repository so issues and pull requests never go to Harper.
+env:
+  GH_REPO: ${{ github.repository }}
 
 jobs:
   merge:
@@ -33,7 +39,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git remote add upstream https://github.com/Automattic/harper.git
           git fetch upstream master
-          BRANCH="harper-merge/$(date +%Y-%m-%d)"
+          BRANCH="upstream-sync/harper-$(date -u +%Y-%m-%d)"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
           git checkout -b "$BRANCH"
           if git merge upstream/master --no-commit --no-ff; then :; else

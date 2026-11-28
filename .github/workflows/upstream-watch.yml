@@ -1,7 +1,8 @@
 name: Watch Harper for updates
 
 # Once a week, look for new commits in Harper (the project Gramflow is forked from) and open
-# an issue that lists them. Nothing is merged. To bring them in, run "Prepare Harper merge".
+# an issue that lists them (label "upstream-update", which the FlowApps launcher's Maintainer
+# settings show). Nothing is merged. To bring them in, run "Prepare Harper merge".
 
 on:
   schedule:
@@ -11,6 +12,11 @@ on:
 permissions:
   contents: read
   issues: write
+
+# The workflow adds a git remote named "upstream", and gh prefers it over origin. Pin gh to this
+# repository so issues and pull requests never go to Harper.
+env:
+  GH_REPO: ${{ github.repository }}
 
 jobs:
   watch:
@@ -30,7 +36,7 @@ jobs:
           BASE=$(git merge-base HEAD upstream/master)
           COUNT=$(git rev-list --count "$BASE..upstream/master")
           echo "New Harper commits: $COUNT"
-          EXISTING=$(gh issue list --label harper-update --state open --json number -q '.[0].number')
+          EXISTING=$(gh issue list --label upstream-update --state open --json number -q '.[0].number')
           if [ "$COUNT" -eq 0 ]; then
             [ -n "$EXISTING" ] && gh issue close "$EXISTING" --comment "Gramflow is up to date with Harper."
             exit 0
@@ -45,6 +51,6 @@ jobs:
           if [ -n "$EXISTING" ]; then
             gh issue edit "$EXISTING" --title "$TITLE" --body-file /tmp/body.md
           else
-            gh label create harper-update --color 449837 --description "New commits in Harper" 2>/dev/null || true
-            gh issue create --title "$TITLE" --body-file /tmp/body.md --label harper-update
+            gh label create upstream-update --color 449837 --description "Upstream has changes to merge" 2>/dev/null || true
+            gh issue create --title "$TITLE" --body-file /tmp/body.md --label upstream-update
           fi
