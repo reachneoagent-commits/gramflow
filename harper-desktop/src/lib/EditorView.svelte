@@ -1,7 +1,7 @@
 <script lang="ts">
+import { listen } from '@tauri-apps/api/event';
 import type { Linter } from 'harper.js';
 import { Editor } from 'harper-editor';
-import { listen } from '@tauri-apps/api/event';
 import { onMount } from 'svelte';
 import { Client } from '$lib/client';
 import { applyTheme } from '$lib/theme';
@@ -27,7 +27,9 @@ onMount(() => {
 	let stopTabs: (() => void) | undefined;
 	void listen<string>('editor-tab', ({ payload }) => {
 		tab = payload === 'humanize' ? 'humanize' : 'check';
-	}).then((stop) => (stopTabs = stop));
+	}).then((stop) => {
+		stopTabs = stop;
+	});
 	void loadTheme();
 
 	// Follow the OS when the preference is "system".

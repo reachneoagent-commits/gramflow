@@ -58,7 +58,9 @@ async function copyReset() {
 	try {
 		await navigator.clipboard.writeText(RESET_COMMAND);
 		copied = true;
-		setTimeout(() => (copied = false), 2000);
+		setTimeout(() => {
+			copied = false;
+		}, 2000);
 	} catch {
 		// Clipboard unavailable; the command is shown on screen to copy by hand.
 	}

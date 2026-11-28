@@ -209,7 +209,9 @@ mod tests {
         for info in &TIERS {
             assert_eq!(info.sha256.len(), 64, "{}", info.id);
             assert!(
-                info.sha256.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f')),
+                info.sha256
+                    .bytes()
+                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f')),
                 "{}",
                 info.id
             );
