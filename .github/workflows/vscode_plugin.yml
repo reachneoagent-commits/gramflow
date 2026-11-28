@@ -25,19 +25,19 @@ jobs:
           - os: macOS-latest
             rust_target: aarch64-apple-darwin
             code_target: darwin-arm64
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             rust_target: x86_64-unknown-linux-gnu
             code_target: linux-x64
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             rust_target: aarch64-unknown-linux-gnu
             code_target: linux-arm64
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             rust_target: armv7-unknown-linux-gnueabihf
             code_target: linux-armhf
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             rust_target: x86_64-unknown-linux-musl
             code_target: alpine-x64
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             rust_target: aarch64-unknown-linux-musl
             code_target: alpine-arm64
     runs-on: ${{ matrix.platform.os }}
@@ -58,7 +58,7 @@ jobs:
         with:
           target: ${{ matrix.platform.rust_target }}
           args: "--locked --release --bin harper-ls"
-          force-use-cross: ${{ matrix.platform.os == 'ubuntu-latest' }}
+          force-use-cross: ${{ matrix.platform.os == 'ubuntu-24.04' }}
           strip: true
       - name: Package extension
         id: package_extension

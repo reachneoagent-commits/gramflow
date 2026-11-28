@@ -19,7 +19,7 @@ env:
 jobs:
   desktop-release-tests:
     name: just test-desktop-release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
@@ -32,7 +32,7 @@ jobs:
 
   desktop-windows:
     name: just build-desktop-windows
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:

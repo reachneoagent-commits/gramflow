@@ -35,28 +35,28 @@ jobs:
             name: harper-ls-aarch64-apple-darwin.tar.gz
             command: build
           - release_for: Linux-x86_64-GNU
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
             project: harper-ls
             bin: harper-ls
             name: harper-ls-x86_64-unknown-linux-gnu.tar.gz
             command: build
           - release_for: Linux-aarch64-GNU
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: aarch64-unknown-linux-gnu
             project: harper-ls
             bin: harper-ls
             name: harper-ls-aarch64-unknown-linux-gnu.tar.gz
             command: build
           - release_for: Linux-x86_64-musl
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: x86_64-unknown-linux-musl
             project: harper-ls
             bin: harper-ls
             name: harper-ls-x86_64-unknown-linux-musl.tar.gz
             command: build
           - release_for: Linux-aarch64-musl
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: aarch64-unknown-linux-musl
             project: harper-ls
             bin: harper-ls
@@ -85,28 +85,28 @@ jobs:
             name: harper-cli-aarch64-apple-darwin.tar.gz
             command: build
           - release_for: Linux-x86_64-GNU
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
             project: harper-cli
             bin: harper-cli
             name: harper-cli-x86_64-unknown-linux-gnu.tar.gz
             command: build
           - release_for: Linux-aarch64-GNU
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: aarch64-unknown-linux-gnu
             project: harper-cli
             bin: harper-cli
             name: harper-cli-aarch64-unknown-linux-gnu.tar.gz
             command: build
           - release_for: Linux-x86_64-musl
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: x86_64-unknown-linux-musl
             project: harper-cli
             bin: harper-cli
             name: harper-cli-x86_64-unknown-linux-musl.tar.gz
             command: build
           - release_for: Linux-aarch64-musl
-            os: ubuntu-latest
+            os: ubuntu-24.04
             target: aarch64-unknown-linux-musl
             project: harper-cli
             bin: harper-cli
@@ -127,7 +127,7 @@ jobs:
           command: ${{ matrix.platform.command }}
           target: ${{ matrix.platform.target }}
           args: "--locked --release --bin ${{ matrix.platform.project }}"
-          force-use-cross: ${{ matrix.platform.os == 'ubuntu-latest' }}
+          force-use-cross: ${{ matrix.platform.os == 'ubuntu-24.04' }}
           strip: true
       - name: Package as archive
         shell: bash
