@@ -59,8 +59,9 @@ export default class ProtocolClient {
 		const key = this.cacheKey(text, domain, options);
 		let p = this.lintCache.get(key);
 		if (!p) {
-			p = sendToExtension({ kind: 'lint', text, domain, options })
-				.then((r) => r.lints as UnpackedLintGroups);
+			p = sendToExtension({ kind: 'lint', text, domain, options }).then(
+				(r) => r.lints as UnpackedLintGroups,
+			);
 			this.lintCache.set(key, p);
 		}
 		return p;

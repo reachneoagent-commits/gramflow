@@ -55,7 +55,9 @@ onMount(() => {
 	let stopTabs: (() => void) | undefined;
 	void listen<string>('editor-tab', ({ payload }) => {
 		tab = payload === 'humanize' ? 'humanize' : 'check';
-	}).then((stop) => (stopTabs = stop));
+	}).then((stop) => {
+		stopTabs = stop;
+	});
 	void loadTheme();
 
 	// Follow the OS when the preference is "system".

@@ -4,8 +4,8 @@ import { Button } from 'components';
 import { onMount } from 'svelte';
 import { Client, type HumanizerRewrite } from '$lib/client';
 import { humanizer, refreshHumanizer } from '$lib/humanizer';
-import HumanizeScan from './HumanizeScan.svelte';
 import HumanizeFacts from './HumanizeFacts.svelte';
+import HumanizeScan from './HumanizeScan.svelte';
 
 let draft = '';
 let result = '';
@@ -22,25 +22,22 @@ export let onSetup: (() => void) | null = null;
 /** Fill the window: taller text areas for the editor tab. */
 export let tall = false;
 
-$: status = $humanizer.status;
-$: ready = Boolean(status && status.engine_installed && status.active);
+$: hzStatus = $humanizer.status;
+$: ready = Boolean(hzStatus && hzStatus.engine_installed && hzStatus.active);
 $: wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
-
 
 onMount(() => {
 	void refreshHumanizer();
 
 	const stops: Array<() => void> = [];
-	void listen<string>('humanizer-text', ({ payload }) => (result += payload)).then((stop) =>
-		stops.push(stop),
-	);
+	void listen<string>('humanizer-text', ({ payload }) => {
+		result += payload;
+	}).then((stop) => stops.push(stop));
 	void listen<string | null>('humanize-input', ({ payload }) => {
 		// The text also waits in the backend for a window that wasn't loaded yet; clear it.
 		void Client.humanizerTakePending();
 		receive(payload);
-	}).then((stop) =>
-		stops.push(stop),
-	);
+	}).then((stop) => stops.push(stop));
 	void Client.humanizerTakePending().then((text) => text && receive(text));
 	draftEl?.focus();
 
@@ -103,7 +100,9 @@ async function copyResult() {
 	try {
 		await navigator.clipboard.writeText(result);
 		copied = true;
-		setTimeout(() => (copied = false), 2000);
+		setTimeout(() => {
+			copied = false;
+		}, 2000);
 	} catch (failure) {
 		error = `Couldn't copy: ${failure}`;
 	}
@@ -134,16 +133,16 @@ function onKeydown(event: KeyboardEvent) {
       <div>
         <strong>Humanizer isn't set up yet</strong>
         <p>
-          {#if status && !status.engine_installed}
+          {#if hzStatus && !hzStatus.engine_installed}
             The rewriting engine isn't included in this build.
-          {:else if status?.verdict.level === 'Unavailable'}
-            {status.verdict.detail}
+          {:else if hzStatus?.verdict.level === 'Unavailable'}
+            {hzStatus.verdict.detail}
           {:else}
             Download a model first. It takes a few minutes and only happens once.
           {/if}
         </p>
       </div>
-      {#if status?.verdict.level !== 'Unavailable'}
+      {#if hzStatus?.verdict.level !== 'Unavailable'}
         <Button size="sm" on:click={() => (onSetup ? onSetup() : Client.humanizerOpenSettings())}>Open settings</Button>
       {/if}
     </div>

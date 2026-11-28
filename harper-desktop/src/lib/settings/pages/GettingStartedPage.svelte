@@ -3,7 +3,12 @@ import { isTauri } from '@tauri-apps/api/core';
 import { platform } from '@tauri-apps/plugin-os';
 import { Button, SlideDeck, Toggle } from 'components';
 import { onMount } from 'svelte';
-import { type AccessibilityPermissionStatus, type BrowserId, Client, type Integration } from '$lib/client';
+import {
+	type AccessibilityPermissionStatus,
+	type BrowserId,
+	Client,
+	type Integration,
+} from '$lib/client';
 import {
 	cancelHumanizerDownload,
 	formatGb,
@@ -76,7 +81,9 @@ async function copyResetCommand() {
 	try {
 		await navigator.clipboard.writeText(RESET_COMMAND);
 		copiedResetCommand = true;
-		setTimeout(() => (copiedResetCommand = false), 2000);
+		setTimeout(() => {
+			copiedResetCommand = false;
+		}, 2000);
 	} catch (error) {
 		console.error('Unable to copy the reset command.', error);
 	}
@@ -104,13 +111,16 @@ $: humanizerVerdict = humanizerStatus?.verdict;
 $: humanizerOptions = humanizerVerdict?.options ?? [];
 $: if (!selectedTier && humanizerOptions.length) {
 	selectedTier =
-		humanizerOptions.find((option) => option.installed && option.id === humanizerStatus?.active)?.id ??
+		humanizerOptions.find((option) => option.installed && option.id === humanizerStatus?.active)
+			?.id ??
 		humanizerOptions.find((option) => option.installed)?.id ??
 		humanizerOptions.find((option) => option.recommended)?.id ??
 		'';
 }
 $: selectedOption = humanizerOptions.find((option) => option.id === selectedTier);
-$: selectedIsActive = Boolean(selectedOption?.installed && selectedOption.id === humanizerStatus?.active);
+$: selectedIsActive = Boolean(
+	selectedOption?.installed && selectedOption.id === humanizerStatus?.active,
+);
 $: humanizerBusy = humanizerStatus?.downloading ?? null;
 $: humanizerInstalled = humanizerOptions.some((option) => option.installed);
 /** The Humanizer slide speaks to this computer: its words change with what the check finds. */
@@ -128,7 +138,9 @@ onMount(() => {
 	void loadIntegrations();
 	void refreshHumanizer();
 	let stopWatchingHumanizer: (() => void) | undefined;
-	void watchHumanizer().then((stop) => (stopWatchingHumanizer = stop));
+	void watchHumanizer().then((stop) => {
+		stopWatchingHumanizer = stop;
+	});
 
 	// Watch for the permission switch being turned on, so nobody has to press a recheck button.
 	const watcher = window.setInterval(() => void watchAccessibility(), 1000);
@@ -181,11 +193,7 @@ function humanizerSlide(slide: OnboardingSlide, verdict: typeof humanizerVerdict
 	};
 }
 
-function canAdvance(
-	slide: OnboardingSlide['id'],
-	accessReady: boolean,
-	needsPermission: boolean,
-) {
+function canAdvance(slide: OnboardingSlide['id'], accessReady: boolean, needsPermission: boolean) {
 	if (slide === 'welcome') return needsPermission || accessReady;
 	if (slide === 'accessibility') return accessReady;
 	return accessReady;
@@ -485,7 +493,9 @@ async function prepareService(request = false) {
           {/each}
         </ul>
         <div class="onboarding-app-actions">
-          <Button color="white" disabled={isLoadingIntegrations || isSavingApps} on:click={() => (appPickerOpen = true)}>
+          <Button color="white" disabled={isLoadingIntegrations || isSavingApps} on:click={() => {
+		appPickerOpen = true;
+	}}>
             Add application...
           </Button>
         </div>

@@ -8,7 +8,7 @@
     %sveltekit.head%
     <script>
       // Show start-up crashes on screen instead of leaving a blank white window.
-      (function () {
+      (() => {
         function show(message) {
           var box = document.getElementById('gramflow-error');
           if (!box) {
@@ -22,11 +22,11 @@
           }
           box.textContent += message + '\n\n';
         }
-        window.addEventListener('error', function (e) {
+        window.addEventListener('error', (e) => {
           show((e.message || 'Error') + (e.filename ? '\n' + e.filename + ':' + e.lineno : '') +
             (e.error && e.error.stack ? '\n' + e.error.stack : ''));
         });
-        window.addEventListener('unhandledrejection', function (e) {
+        window.addEventListener('unhandledrejection', (e) => {
           var r = e.reason;
           show('Unhandled: ' + ((r && (r.stack || r.message)) || String(r)));
         });

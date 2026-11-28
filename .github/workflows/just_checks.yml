@@ -2,9 +2,9 @@ name: Just Checks
 
 on:
   push:
-    branches: ["master", "web-prod"]
+    branches: ["main", "master", "web-prod"]
   pull_request:
-    branches: ["master"]
+    branches: ["main", "master"]
   merge_group:
 
 # Cancel superseded runs when a PR gets new commits, freeing runners for other
@@ -18,9 +18,12 @@ env:
 
 jobs:
   just-checks:
-    runs-on: ubuntu-latest
+    # Pinned: Playwright can't install Chromium on ubuntu-latest (26.04) yet.
+    runs-on: ubuntu-24.04
     name: just ${{ matrix.task }}
     strategy:
+      # Let every task finish so one failure doesn't hide the others.
+      fail-fast: false
       matrix:
         task:
           [
@@ -69,5 +72,9 @@ jobs:
         run: cargo binstall cargo-hack --force --no-confirm
       - name: Install `tauri-cli`
         run: cargo binstall tauri-cli --force --no-confirm
+      # Gramflow bundles the Humanizer engine and the browser extensions as app
+      # resources. The release workflow fills these folders; CI only needs them to exist.
+      - name: Create placeholder app resources
+        run: mkdir -p harper-desktop/src-tauri/engine-bundle packages/chrome-plugin/build packages/chrome-plugin/build-firefox
       - name: Run `${{ matrix.task }}`
         run: just ${{ matrix.task }}
