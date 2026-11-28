@@ -3898,15 +3898,24 @@ dependencies = [
 
 [[package]]
 name = "harper-brill"
-version = "3.2.0"
+version = "3.3.0"
 dependencies = [
  "harper-pos-utils",
  "serde_json",
 ]
 
 [[package]]
+name = "harper-context-ranker"
+version = "3.3.0"
+dependencies = [
+ "hashbrown 0.16.1",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "harper-core"
-version = "3.2.0"
+version = "3.3.0"
 dependencies = [
  "ammonia",
  "bitflags 2.13.1",
@@ -3915,6 +3924,7 @@ dependencies = [
  "foldhash 0.2.0",
  "fst",
  "harper-brill",
+ "harper-context-ranker",
  "harper-thesaurus",
  "hashbrown 0.16.1",
  "indexmap 2.14.2",
@@ -3941,7 +3951,7 @@ dependencies = [
 
 [[package]]
 name = "harper-dictionary-wordlist"
-version = "3.2.0"
+version = "3.3.0"
 dependencies = [
  "harper-core",
  "itertools 0.14.0",
@@ -3950,7 +3960,7 @@ dependencies = [
 
 [[package]]
 name = "harper-pos-utils"
-version = "3.2.0"
+version = "3.3.0"
 dependencies = [
  "burn",
  "burn-ndarray",
@@ -3966,7 +3976,7 @@ dependencies = [
 
 [[package]]
 name = "harper-thesaurus"
-version = "3.2.0"
+version = "3.3.0"
 dependencies = [
  "hashbrown 0.16.1",
  "indexmap 2.14.2",

@@ -1,13 +1,14 @@
 <script lang="ts">
+import { listen } from '@tauri-apps/api/event';
 import type { Linter } from 'harper.js';
 import { Editor } from 'harper-editor';
-import { listen } from '@tauri-apps/api/event';
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 import { Client } from '$lib/client';
 import { applyTheme } from '$lib/theme';
 import 'harper-editor/style.css';
 
 let linter: Linter | null = null;
+let error = '';
 
 type Tab = 'check' | 'humanize';
 const tabs: Array<{ id: Tab; label: string }> = [
@@ -23,7 +24,34 @@ let tab: Tab =
 		: 'check';
 
 onMount(() => {
-	void createLinter();
+	let active = true;
+	let pending = Promise.resolve();
+	// Serialize refreshes so an older pack snapshot cannot replace a newer one.
+	const refresh = () => {
+		pending = pending
+			.then(async () => {
+				if (!active) return;
+				const next = await Client.createEditorLinter();
+				if (!active) {
+					await next.dispose();
+					return;
+				}
+				const previous = linter;
+				if (previous) await next.importIgnoredLints(await previous.exportIgnoredLints());
+				linter = next;
+				error = '';
+				await tick();
+				await previous?.dispose();
+			})
+			.catch((cause) => {
+				if (active) error = String(cause);
+			});
+	};
+	const unlisten = listen('weirpacks-changed', refresh);
+	void unlisten.then(refresh).catch((cause) => {
+		if (active) error = String(cause);
+	});
+
 	let stopTabs: (() => void) | undefined;
 	void listen<string>('editor-tab', ({ payload }) => {
 		tab = payload === 'humanize' ? 'humanize' : 'check';
@@ -35,6 +63,9 @@ onMount(() => {
 	const onSystemChange = () => void loadTheme();
 	media.addEventListener('change', onSystemChange);
 	return () => {
+		active = false;
+		void unlisten.then((stop) => stop()).catch(console.error);
+		void pending.then(() => linter?.dispose());
 		media.removeEventListener('change', onSystemChange);
 		stopTabs?.();
 	};
@@ -46,17 +77,6 @@ async function loadTheme() {
 	} catch {
 		applyTheme('system');
 	}
-}
-
-async function createLinter() {
-	const [{ WorkerLinter }, { slimBinaryInlined }] = await Promise.all([
-		import('harper.js'),
-		import('harper.js/slimBinaryInlined'),
-	]);
-
-	const nextLinter = new WorkerLinter({ binary: slimBinaryInlined });
-	await nextLinter.setup();
-	linter = nextLinter;
 }
 </script>
 
@@ -75,6 +95,7 @@ async function createLinter() {
   </div>
   <div class="min-h-0 flex-1 overflow-auto">
     {#if tab === 'check'}
+      {#if error}<p role="alert">Failed to load editor settings: {error}</p>{/if}
       {#if linter}
         <Editor {linter} />
       {/if}

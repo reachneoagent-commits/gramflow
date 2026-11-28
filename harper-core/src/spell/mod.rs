@@ -2,13 +2,15 @@
 //! dictionary lookups).
 
 use itertools::Itertools;
+use smallvec::ToSmallVec;
 
-use crate::{CharString, CharStringExt, DictWordMetadata};
+use crate::{CharString, CharStringExt, Dialect, DictWordMetadata};
 
 pub use self::dictionary::Dictionary;
 pub use self::fst_dictionary::FstDictionary;
 pub use self::merged_dictionary::MergedDictionary;
 pub use self::mutable_dictionary::MutableDictionary;
+pub use self::surrounding_words::{context_word, surrounding_words};
 pub use self::trie_dictionary::TrieDictionary;
 pub use self::word_id::{CanonicalWordId, CaseFoldedWordId};
 
@@ -17,6 +19,7 @@ mod fst_dictionary;
 mod merged_dictionary;
 mod mutable_dictionary;
 mod rune;
+mod surrounding_words;
 mod trie_dictionary;
 mod word_id;
 mod word_map;
@@ -403,6 +406,28 @@ fn score_suggestion(misspelled_word: &[char], sug: &FuzzyMatchResult) -> i32 {
         score -= 6;
     }
 
+    if sug.edit_distance <= 2 {
+        if is_ei_ie_misspelling(misspelled_word, sug.word) {
+            score -= 11;
+        }
+        if is_er_misspelling(misspelled_word, sug.word) {
+            score -= 15;
+        }
+    }
+
+    score
+}
+
+/// Gramflow's ranking on top of Harper's score: swapped letters and a missing final letter in
+/// short words. It orders the suggestions but is kept out of the score handed to the context
+/// ranker, whose weights are fitted to Harper's own scale.
+fn gramflow_adjustment(misspelled_word: &[char], sug: &FuzzyMatchResult) -> i32 {
+    if misspelled_word.is_empty() || sug.word.is_empty() {
+        return 0;
+    }
+
+    let mut score = 0;
+
     // A swapped pair of letters is really one slip, not two edits, so score it like a one-letter
     // difference (including the "first letter is right" credit, which a swap at the start loses).
     if misspelled_word.len() <= SHORT_WORD && is_transposition(misspelled_word, sug.word) {
@@ -420,26 +445,24 @@ fn score_suggestion(misspelled_word: &[char], sug: &FuzzyMatchResult) -> i32 {
         score -= 3;
     }
 
-    if sug.edit_distance <= 2 {
-        if is_ei_ie_misspelling(misspelled_word, sug.word) {
-            score -= 11;
-        }
-        if is_er_misspelling(misspelled_word, sug.word) {
-            score -= 15;
-        }
-    }
-
     score
 }
 
-/// Order the suggestions to be shown to the user.
+/// Order the suggestions to be shown to the user, each with its score. Lower scores are better.
 fn order_suggestions<'b>(
     misspelled_word: &[char],
-    mut matches: Vec<FuzzyMatchResult<'b>>,
-) -> Vec<&'b [char]> {
-    matches.sort_by_cached_key(|v| score_suggestion(misspelled_word, v));
-
-    matches.into_iter().map(|v| v.word).collect()
+    matches: Vec<FuzzyMatchResult<'b>>,
+) -> Vec<(&'b [char], i32)> {
+    matches
+        .into_iter()
+        .map(|v| {
+            let score = score_suggestion(misspelled_word, &v);
+            let order = score.saturating_add(gramflow_adjustment(misspelled_word, &v));
+            (v.word, score, order)
+        })
+        .sorted_by_key(|(_, _, order)| *order)
+        .map(|(word, score, _)| (word, score))
+        .collect()
 }
 
 /// Get the closest matches in the provided [`Dictionary`] and rank them
@@ -450,6 +473,21 @@ pub fn suggest_correct_spelling<'a>(
     max_edit_dist: u8,
     dictionary: &'a impl Dictionary,
 ) -> Vec<&'a [char]> {
+    let matches = fuzzy_matches_with_swaps(misspelled_word, result_limit, max_edit_dist, dictionary);
+
+    order_suggestions(misspelled_word, matches)
+        .into_iter()
+        .map(|(word, _)| word)
+        .collect()
+}
+
+/// The dictionary's fuzzy matches, plus any swapped-letters fix for a short word.
+fn fuzzy_matches_with_swaps<'a>(
+    misspelled_word: &[char],
+    result_limit: usize,
+    max_edit_dist: u8,
+    dictionary: &'a impl Dictionary,
+) -> Vec<FuzzyMatchResult<'a>> {
     let mut matches: Vec<FuzzyMatchResult> = dictionary
         .fuzzy_match(misspelled_word, max_edit_dist, result_limit)
         .into_iter()
@@ -481,7 +519,34 @@ pub fn suggest_correct_spelling<'a>(
         }
     }
 
-    order_suggestions(misspelled_word, matches)
+    matches
+}
+
+/// Spelling candidates for a misspelled word with their scores, in Harper's spelling order.
+///
+/// Widens the edit distance until a match appears.
+pub fn spelling_candidates(
+    word: &[char],
+    dictionary: &impl Dictionary,
+    dialect: Dialect,
+    limit: usize,
+) -> Vec<(CharString, i32)> {
+    (2..5)
+        .map(|dist| {
+            order_suggestions(word, fuzzy_matches_with_swaps(word, 200, dist, dictionary))
+                .into_iter()
+                .filter(|(candidate, _)| {
+                    dictionary
+                        .get_word_metadata(candidate)
+                        .is_some_and(|meta| meta.dialects.is_dialect_enabled(dialect))
+                })
+                .unique_by(|(candidate, _)| candidate.to_lower())
+                .map(|(candidate, score)| (candidate.to_smallvec(), score))
+                .take(limit)
+                .collect::<Vec<_>>()
+        })
+        .find(|suggestions| !suggestions.is_empty())
+        .unwrap_or_default()
 }
 
 /// Convenience function over [`suggest_correct_spelling`] that does conversions

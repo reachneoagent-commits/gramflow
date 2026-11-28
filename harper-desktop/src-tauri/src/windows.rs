@@ -205,6 +205,8 @@ pub fn show_settings_window(app: &tauri::AppHandle) -> tauri::Result<()> {
     };
     let window = WebviewWindowBuilder::new(app, "settings", WebviewUrl::App("index.html".into()))
         .theme(saved_theme(app))
+        // Let the Weirpacks page receive browser File objects for dropped archives.
+        .disable_drag_drop_handler()
         .title("Gramflow Settings")
         .inner_size(width, height)
         .min_inner_size(780.0, 520.0)

@@ -92,7 +92,11 @@ select {
 }
 
 button {
-	cursor: default;
+	cursor: pointer;
+}
+
+button:disabled {
+	cursor: not-allowed;
 }
 
 .onboarding-shell {
@@ -120,7 +124,8 @@ button {
 .onboarding-actions {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: center;
+	width: 100%;
 	gap: 12px;
 	margin-top: 24px;
 }
@@ -132,6 +137,8 @@ button {
 .onboarding-app {
 	display: flex;
 	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
 	gap: 12px;
 }
 
